@@ -7,7 +7,7 @@ using Npgsql;
 
 namespace Csud.Repo
 {
-    public class PersonRepo: BaseRepoT<Person>, IPersonRepo
+    public class PersonRepo: BaseRepo<Person>, IPersonRepo
     {
         public PersonRepo(string conStr, string tableName) : base(conStr, tableName)
         {

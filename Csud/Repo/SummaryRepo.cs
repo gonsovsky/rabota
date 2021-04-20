@@ -8,22 +8,27 @@ using Npgsql;
 
 namespace Csud.Repo
 {
-    public class SummaryRepo : BaseRepoT<Summary>, ISummaryRepo
+    public class SummaryRepo : BaseRepo<Summary>, ISummaryRepo
     {
         public SummaryRepo(string conStr, string tableName) : base(conStr, tableName)
         {
         }
 
-
-
-        //public override IEnumerable<Summary> GetList()
-        //{
-        //    return base.GetList();
-        //}
-
         public IEnumerable<string> Overview()
         {
-            throw new NotImplementedException();
+            var list = GetList();
+            foreach (var item in list)
+            {
+                
+                var text = 
+$@"Субъект {item.Subject} (№{item.SubjectKey}) с уч. записью
+{item.Account} выданной поставщиком {item.Provider} принадлежащей сотруднику {item.Person}
+в рабочее время (контекст {item.ContextType}) опредленное c {item.TimeStart} по {item.TimeEnd}
+согласно должностным обязанностям (объект {item.ObjectType} {item.ObjectName})
+должен выполнять работу: {item.Task}
+            ";            
+                yield return text;
+            }
         }
     }
 }

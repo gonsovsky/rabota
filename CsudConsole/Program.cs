@@ -12,7 +12,8 @@ namespace CsudConsole
             //Правила доступа
             foreach (var p in csud.Summary.Overview())
             {
-
+                Console.WriteLine(p);
+                Console.WriteLine();
             }
 
             Console.ReadKey();
@@ -22,8 +23,6 @@ namespace CsudConsole
             {
                 Console.WriteLine(p.FirstName);
             }
-
-        
 
             Console.ReadKey();
         }
