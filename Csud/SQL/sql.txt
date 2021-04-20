@@ -1,0 +1,140 @@
+﻿create table if not exists person
+(
+	key serial not null
+		constraint person_pk
+			primary key,
+	first_name varchar
+);
+
+alter table person owner to postgres;
+
+create table if not exists account
+(
+	key serial not null,
+	provider_key integer not null,
+	subject_key integer,
+	name varchar,
+	"personKey" integer,
+	constraint account_pk
+		primary key (provider_key, key)
+);
+
+alter table account owner to postgres;
+
+create unique index if not exists account_key_uindex
+	on account (key);
+
+create table if not exists subject
+(
+	key serial not null
+		constraint subject_pk
+			primary key,
+	type varchar,
+	name varchar,
+	status varchar,
+	context_key integer
+);
+
+alter table subject owner to postgres;
+
+create unique index if not exists subject_key_uindex
+	on subject (key);
+
+create table if not exists object
+(
+	key serial not null
+		constraint object_pk
+			primary key,
+	type varchar,
+	name varchar,
+	status varchar,
+	context_key integer
+);
+
+alter table object owner to postgres;
+
+create unique index if not exists object_key_uindex
+	on object (key);
+
+create table if not exists account_provider
+(
+	key serial not null
+		constraint accountprovider_pk
+			primary key,
+	type varchar
+);
+
+alter table account_provider owner to postgres;
+
+create unique index if not exists accountprovider_key_uindex
+	on account_provider (key);
+
+create table if not exists context
+(
+	key serial not null
+		constraint context_pk
+			primary key,
+	type varchar,
+	temp bit,
+	display_name varchar
+);
+
+alter table context owner to postgres;
+
+create unique index if not exists context_key_uindex
+	on context (key);
+
+create table if not exists time_context
+(
+	key serial not null
+		constraint timecontext_pk
+			primary key,
+	context_key integer,
+	time_start time,
+	time_end time,
+	name varchar
+);
+
+alter table time_context owner to postgres;
+
+create unique index if not exists timecontext_key_uindex
+	on time_context (key);
+
+create table if not exists task
+(
+	key serial not null
+		constraint task_pk
+			primary key,
+	object_key integer,
+	related_object_key integer,
+	name varchar
+);
+
+alter table task owner to postgres;
+
+create unique index if not exists task_key_uindex
+	on task (key);
+
+create or replace view summary_by_account(subject_key, subject, account, person, provider, context_type, time_start, time_end, object_name, object_type, task) as
+	SELECT s.key        AS subject_key,
+       s.name       AS subject,
+       a.name       AS account,
+       p.first_name AS person,
+       ap.type      AS provider,
+       co.type      AS context_type,
+       tc.time_start,
+       tc.time_end,
+       o.name       AS object_name,
+       o.type       AS object_type,
+       t.name       AS task
+FROM subject s
+         LEFT JOIN account a ON a.key = s.key
+         LEFT JOIN account_provider ap ON ap.key = s.key
+         LEFT JOIN person p ON p.key = s.key
+         LEFT JOIN context co ON co.key = s.key
+         LEFT JOIN time_context tc ON tc.context_key = co.key
+         LEFT JOIN object o ON o.context_key = co.key
+         LEFT JOIN task t ON t.object_key = o.key;
+
+alter table summary_by_account owner to postgres;
+
