@@ -1,4 +1,4 @@
-﻿create table if not exists person
+﻿create table person
 (
 	key serial not null
 		constraint person_pk
@@ -8,23 +8,23 @@
 
 alter table person owner to postgres;
 
-create table if not exists account
+create table account
 (
 	key serial not null,
 	provider_key integer not null,
 	subject_key integer,
 	name varchar,
-	"personKey" integer,
+	person_key integer,
 	constraint account_pk
 		primary key (provider_key, key)
 );
 
 alter table account owner to postgres;
 
-create unique index if not exists account_key_uindex
+create unique index account_key_uindex
 	on account (key);
 
-create table if not exists subject
+create table subject
 (
 	key serial not null
 		constraint subject_pk
@@ -37,10 +37,10 @@ create table if not exists subject
 
 alter table subject owner to postgres;
 
-create unique index if not exists subject_key_uindex
+create unique index subject_key_uindex
 	on subject (key);
 
-create table if not exists object
+create table object
 (
 	key serial not null
 		constraint object_pk
@@ -53,10 +53,10 @@ create table if not exists object
 
 alter table object owner to postgres;
 
-create unique index if not exists object_key_uindex
+create unique index object_key_uindex
 	on object (key);
 
-create table if not exists account_provider
+create table account_provider
 (
 	key serial not null
 		constraint accountprovider_pk
@@ -66,10 +66,10 @@ create table if not exists account_provider
 
 alter table account_provider owner to postgres;
 
-create unique index if not exists accountprovider_key_uindex
+create unique index accountprovider_key_uindex
 	on account_provider (key);
 
-create table if not exists context
+create table context
 (
 	key serial not null
 		constraint context_pk
@@ -81,10 +81,10 @@ create table if not exists context
 
 alter table context owner to postgres;
 
-create unique index if not exists context_key_uindex
+create unique index context_key_uindex
 	on context (key);
 
-create table if not exists time_context
+create table time_context
 (
 	key serial not null
 		constraint timecontext_pk
@@ -97,10 +97,10 @@ create table if not exists time_context
 
 alter table time_context owner to postgres;
 
-create unique index if not exists timecontext_key_uindex
+create unique index timecontext_key_uindex
 	on time_context (key);
 
-create table if not exists task
+create table task
 (
 	key serial not null
 		constraint task_pk
@@ -112,11 +112,13 @@ create table if not exists task
 
 alter table task owner to postgres;
 
-create unique index if not exists task_key_uindex
+create unique index task_key_uindex
 	on task (key);
 
-create or replace view summary_by_account(subject_key, subject, account, person, provider, context_type, time_start, time_end, object_name, object_type, task) as
-	SELECT s.key        AS subject_key,
+create view summary_by_account
+            (subject_key, subject, account, person, provider, context_type, time_start, time_end, object_name,
+             object_type, task) as
+SELECT s.key        AS subject_key,
        s.name       AS subject,
        a.name       AS account,
        p.first_name AS person,
@@ -128,13 +130,14 @@ create or replace view summary_by_account(subject_key, subject, account, person,
        o.type       AS object_type,
        t.name       AS task
 FROM subject s
-         LEFT JOIN account a ON a.key = s.key
+         LEFT JOIN account a ON a.subject_key = s.key
          LEFT JOIN account_provider ap ON ap.key = s.key
-         LEFT JOIN person p ON p.key = s.key
-         LEFT JOIN context co ON co.key = s.key
+         LEFT JOIN person p ON p.key = a.person_key
+         LEFT JOIN context co ON co.key = s.context_key
          LEFT JOIN time_context tc ON tc.context_key = co.key
          LEFT JOIN object o ON o.context_key = co.key
          LEFT JOIN task t ON t.object_key = o.key;
 
-alter table summary_by_account owner to postgres;
+alter table summary_by_account
+    owner to postgres;
 

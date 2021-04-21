@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Csud.Base;
 using Csud.Interfaces;
 using Csud.Models;
-using Npgsql;
 
-namespace Csud.Repo
+namespace Csud.Repo.Postgre
 {
-    public class SummaryRepo : BaseRepo<Summary>, ISummaryRepo
+    public class SummaryRepo : PostgreRepo<Summary>, ISummaryRepo
     {
         public SummaryRepo(string conStr, string tableName) : base(conStr, tableName)
         {

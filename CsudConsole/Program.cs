@@ -7,7 +7,9 @@ namespace CsudConsole
     {
         static void Main(string[] args)
         {
-            var csud = new Csud.Csud(ConfigurationManager.ConnectionStrings["CSUD_BD"].ConnectionString);
+            //CSUD_Mongo
+            //CSUD_Postgre
+            var csud = new Csud.Csud(ConfigurationManager.ConnectionStrings["CSUD_Postgre"].ConnectionString);
 
             //Правила доступа
             foreach (var p in csud.Summary.Overview())

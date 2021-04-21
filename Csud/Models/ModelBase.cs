@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Csud.Interfaces;
+using Csud.Base;
 
-namespace Csud.Base
+namespace Csud.Models
 {
     public class ModelBase
     {

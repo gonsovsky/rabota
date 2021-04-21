@@ -4,7 +4,7 @@ using Csud.Models;
 
 namespace Csud.Interfaces
 {
-    public interface IPersonRepo : IBaseRepoT<Person>
+    public interface IPersonRepo : IBaseRepo<Person>
     {
 
     }

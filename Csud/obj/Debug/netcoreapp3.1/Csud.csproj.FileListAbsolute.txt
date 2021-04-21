@@ -9,3 +9,4 @@ C:\@job\ZSU\csud\Csud\obj\Debug\netcoreapp3.1\Csud.AssemblyInfo.cs
 C:\@job\ZSU\csud\Csud\obj\Debug\netcoreapp3.1\Csud.csproj.CoreCompileInputs.cache
 C:\@job\ZSU\csud\Csud\obj\Debug\netcoreapp3.1\Csud.dll
 C:\@job\ZSU\csud\Csud\obj\Debug\netcoreapp3.1\Csud.pdb
+C:\@job\ZSU\csud\Csud\obj\Debug\netcoreapp3.1\Csud.csprojAssemblyReference.cache

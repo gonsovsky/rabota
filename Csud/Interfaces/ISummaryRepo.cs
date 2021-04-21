@@ -6,7 +6,7 @@ using Csud.Models;
 
 namespace Csud.Interfaces
 {
-    public interface ISummaryRepo : IBaseRepoT<Summary>
+    public interface ISummaryRepo : IBaseRepo<Summary>
     {
         public IEnumerable<string> Overview();
     }

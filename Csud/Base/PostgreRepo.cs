@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Csud.Interfaces;
+using Csud.Models;
 using LinqToDB;
 using LinqToDB.Mapping;
 using MongoDB.Driver.Core.Configuration;
@@ -12,22 +14,8 @@ using Npgsql;
 
 namespace Csud.Base
 {
-    public interface IBaseRepoT<T> where T : ModelBase
-    {
-        T Add(T item);
-        T Update(T item);
-        IList<T> GetList();
-        IList<T> GetList(CamlFilter filter);
-        IList<TV> GetDistinctValues<TV>(string fieldName, CamlFilter filter);
-        IBaseRepoT<T> InnerJoin<T1>(string alias, string leftKey, string rightKey);
-        IBaseRepoT<T> LeftJoin<T1>(string alias, string leftKey, string rightKey);
-
-        void ExecuteNonQuery(string procName, params KeyValuePair<string, object>[] parameters);
-        T1 ExecuteScalar<T1>(string commandText, params KeyValuePair<string, object>[] parameters);
-        DataTable ExecuteTable(string commandText, params KeyValuePair<string, object>[] parameters);
-    }
-
-    public class BaseRepo<T> : IBaseRepoT<T> where T : ModelBase
+  
+    public class PostgreRepo<T> : IBaseRepo<T> where T : ModelBase
     {
         //TODO: refactor
         private const string EntityAlias = "req";
@@ -51,7 +39,7 @@ namespace Csud.Base
 
         public string TableName;
 
-        public BaseRepo(string connectionString, string tableName)
+        public PostgreRepo(string connectionString, string tableName)
         {
             TableName = tableName;
             ConnectionString = connectionString;
@@ -314,9 +302,9 @@ namespace Csud.Base
         /// <param name="leftKey"></param>
         /// <param name="rightKey"></param>
         /// <returns></returns>
-        public IBaseRepoT<T> LeftJoin<T1>(string rightAlias, string leftKey, string rightKey)
+        public IBaseRepo<T> LeftJoin<T1>(string rightAlias, string leftKey, string rightKey)
         {
-            var repository = new BaseRepo<T>(ConnectionString, TableName);
+            var repository = new PostgreRepo<T>(ConnectionString, TableName);
 
             repository._joins.AddRange(_joins);
             repository._joins.Add(new JoinDefinition
@@ -339,9 +327,9 @@ namespace Csud.Base
         /// <param name="leftKey"></param>
         /// <param name="rightKey"></param>
         /// <returns></returns>
-        public IBaseRepoT<T> InnerJoin<T1>(string alias, string leftKey, string rightKey)
+        public IBaseRepo<T> InnerJoin<T1>(string alias, string leftKey, string rightKey)
         {
-            var repository = new BaseRepo<T>(ConnectionString, TableName);
+            var repository = new PostgreRepo<T>(ConnectionString, TableName);
 
             repository._joins.AddRange(_joins);
             _joins.Add(new JoinDefinition

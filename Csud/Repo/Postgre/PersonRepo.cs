@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Csud.Base;
 using Csud.Interfaces;
 using Csud.Models;
-using Npgsql;
 
-namespace Csud.Repo
+namespace Csud.Repo.Postgre
 {
-    public class PersonRepo: BaseRepo<Person>, IPersonRepo
+    public class PersonRepo: PostgreRepo<Person>, IPersonRepo
     {
         public PersonRepo(string conStr, string tableName) : base(conStr, tableName)
         {
